@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Can my GPU run it? Check if an open model fits on your GPUs</title>
+<meta name="description" content="Check whether an open model from Hugging Face fits on your GPUs, how many you need, and how much context you can serve.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page">
+  <header class="head">
+    <h1>Can my GPU run it?</h1>
+    <button type="button" class="link" id="tokenToggle">Hugging Face token</button>
+  </header>
+  <p class="lede">Check whether an open model from Hugging Face fits on your GPUs, and how many you need.</p>
+
+  <div class="token" id="tokenBox" hidden>
+    <label for="token">Only needed for gated models such as Llama and Gemma. It stays in this browser and is sent only to huggingface.co.</label>
+    <input id="token" type="password" placeholder="hf_…" autocomplete="off" spellcheck="false">
+  </div>
+
+  <form class="search" id="searchForm">
+    <input id="repo" type="text" placeholder="Model name or Hugging Face link, e.g. deepseek-ai/DeepSeek-V3" autocomplete="off" spellcheck="false" aria-label="Model" autofocus>
+    <button type="submit" id="go">Check</button>
+  </form>
+  <p class="examples" id="examples"></p>
+  <p class="status" id="status" hidden></p>
+
+  <p class="sentence" id="sentence">
+    Run <span id="modelName" class="model-name">this model</span> on
+    <select id="count" aria-label="Number of GPUs"></select> ×
+    <span class="gpu-pick">
+      <button type="button" id="gpuBtn" class="field" aria-haspopup="listbox"></button>
+      <span class="pop" id="gpuPop" hidden>
+        <input id="gpuSearch" type="text" autocomplete="off" spellcheck="false" aria-label="Search GPUs">
+        <span class="list" id="gpuList" role="listbox"></span>
+        <span class="custom" id="customBox" hidden>
+          <label>Memory per GPU, GB <input id="cMem" type="number" min="1" step="1"></label>
+          <label>Bandwidth, TB/s <input id="cBw" type="number" min="0.05" step="0.05"></label>
+          <label>Chip family <select id="cArch"></select></label>
+        </span>
+      </span>
+    </span>
+    in <select id="prec" aria-label="Weight precision"></select>
+    with <input id="ctx" class="field ctx" type="text" aria-label="Context length" list="ctxList"> tokens of context
+    for <input id="seqs" class="field seqs" type="number" min="1" step="1" aria-label="Concurrent requests"> <span id="seqWord">request</span> at a time.
+    <datalist id="ctxList"></datalist>
+  </p>
+
+  <main id="out"></main>
+
+  <footer class="foot">
+    <p>Estimates assume vLLM or SGLang serving with tensor parallelism. Results near the limit are borderline. Model data is read live from Hugging Face; nothing is downloaded.</p>
+    <p class="credit">Made by <a href="https://majnioui.me" target="_blank" rel="noopener">Moe Majnioui</a></p>
+  </footer>
+</div>
+<script type="module" src="app.js"></script>
+</body>
+</html>
