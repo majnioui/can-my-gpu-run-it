@@ -24,11 +24,27 @@ It uses ES modules, so open it over HTTP, not `file://`. It deploys as-is to Git
 
 Gated models (Llama, Gemma…) need a Hugging Face token. The token stays in the browser's `localStorage` and is sent only to huggingface.co.
 
+## SEO pages
+
+`scripts/build.mjs` generates static pages from live Hugging Face data:
+
+- `/models/<model>/`: GPUs needed per GPU and precision, context limits, memory breakdown and FAQ for ~35 popular models
+- `/gpus/<gpu>/`: which models fit on each of 16 popular GPUs
+- `/models/`, `/gpus/`: hub pages, plus the links section on the homepage
+- `sitemap.xml` and `robots.txt`
+
+```sh
+node scripts/build.mjs   # re-run to refresh data or after editing the model list
+```
+
+The generated files are committed, so the site still deploys as plain static files.
+
 ## Files
 
 - `calc.js`: GPU specs, precision support, and the memory model (pure functions, runs in Node too)
 - `hf.js`: Hugging Face loader: repo parsing, config fallbacks, quantization detection
 - `app.js`: the interface and the link state
+- `scripts/build.mjs`: the SEO page generator (edit `MODELS` and `GPU_PAGES` there)
 
 ## Accuracy
 

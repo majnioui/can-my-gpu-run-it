@@ -167,7 +167,10 @@ function normType(t) {
 }
 
 export function analyzeArch(c) {
-  const L = first(c.num_hidden_layers, c.n_layer, c.num_layers, c.n_layers);
+  const blocks = Array.isArray(c.layers_block_type) ? c.layers_block_type : null; // Nemotron-H (newer configs)
+  const L = first(c.num_hidden_layers, c.n_layer, c.num_layers, c.n_layers, blocks?.length,
+    typeof c.hybrid_override_pattern === 'string' ? c.hybrid_override_pattern.length : undefined);
+  const lac = c.linear_attn_config && typeof c.linear_attn_config === 'object' ? c.linear_attn_config : null; // Kimi/GLM KDA
   const hidden = first(c.hidden_size, c.n_embd, c.d_model);
   const nHeads = first(c.num_attention_heads, c.n_head, c.num_heads);
   let nKv = first(c.num_key_value_heads, c.multi_query_group_num, c.n_head_kv);
@@ -189,6 +192,15 @@ export function analyzeArch(c) {
   } else if (Array.isArray(c.layer_types) && c.layer_types.length) {
     types = Array.from({ length: L }, (_, i) => normType(c.layer_types[i] ?? 'full'));
     typeSource = 'layer_types';
+  } else if (Array.isArray(lac?.full_attn_layers)) {
+    // Kimi-Linear: listed layers are full (MLA) attention, the rest are KDA linear attention. Indices may be 1-based.
+    const f = lac.full_attn_layers;
+    const oneBased = f.includes(L) || !f.includes(0);
+    types = Array.from({ length: L }, (_, i) => (f.includes(oneBased ? i + 1 : i) ? 'full' : 'linear'));
+    typeSource = 'linear_attn_config';
+  } else if (blocks) {
+    types = blocks.map((b) => (b === 'attention' ? 'full' : b === 'mamba' ? 'linear' : 'none'));
+    typeSource = 'layers_block_type';
   } else if (Array.isArray(c.attn_type_list) && c.attn_type_list.length) {
     types = Array.from({ length: L }, (_, i) => (c.attn_type_list[i] === 0 ? 'linear' : 'full'));
     typeSource = 'attn_type_list';
@@ -224,25 +236,30 @@ export function analyzeArch(c) {
   // ---- recurrent / linear-attention state per sequence per linear layer (bytes)
   let linearStateBytes = 0;
   if (layers.linear) {
-    if (c.linear_num_value_heads) {
+    if (lac) {
+      // Kimi Delta Attention: per-head d×d fp32 state + short conv state
+      const h = lac.num_heads ?? nHeads, d = lac.head_dim ?? 128;
+      linearStateBytes = h * d * d * 4 + 3 * h * d * ((lac.short_conv_kernel_size ?? 4) - 1) * 2;
+    } else if (c.linear_num_value_heads) {
       // Gated DeltaNet (Qwen3-Next): recurrent state + conv state
       const vH = c.linear_num_value_heads, kH = c.linear_num_key_heads ?? vH;
       const kD = c.linear_key_head_dim ?? 128, vD = c.linear_value_head_dim ?? 128;
       const conv = (2 * kH * kD + vH * vD) * ((c.linear_conv_kernel_dim ?? 4) - 1);
       linearStateBytes = (vH * kD * vD + conv) * 2;
     } else if (c.mamba_num_heads) {
-      linearStateBytes = c.mamba_num_heads * (c.mamba_head_dim ?? 64) * (c.ssm_state_size ?? 128) * 2;
+      const ssmBytes = String(c.mamba_ssm_cache_dtype ?? c.mamba_ssm_dtype ?? '').includes('32') ? 4 : 2;
+      linearStateBytes = c.mamba_num_heads * (c.mamba_head_dim ?? 64) * (c.ssm_state_size ?? 128) * ssmBytes;
     } else if (c.mamba_d_state || c.mamba_expand) {
       linearStateBytes = (c.mamba_expand ?? 2) * hidden * (c.mamba_d_state ?? 16) * 2;
     } else {
       // Lightning attention (MiniMax-M1/Text-01): per-head KV outer-product state, fp32
-      linearStateBytes = nHeads * headDim * headDim * 4;
+      linearStateBytes = headDim > 0 ? nHeads * headDim * headDim * 4 : hidden * 128 * 4;
     }
   }
 
   // ---- MoE / params
   const experts = first(c.n_routed_experts, c.num_local_experts, c.num_experts, c.moe_num_experts);
-  const topk = first(c.num_experts_per_tok, c.experts_per_token, c.moe_top_k, c.top_k);
+  const topk = first(c.num_experts_per_tok, c.num_experts_per_token, c.experts_per_token, c.moe_top_k, c.moe_k);
   const moeInter = first(c.moe_intermediate_size, c.expert_intermediate_size, c.intermediate_size);
   const isMoE = experts > 1 && topk > 0;
   let moeLayers = 0;
@@ -251,18 +268,31 @@ export function analyzeArch(c) {
     if (c.decoder_sparse_step > 1) moeLayers = Math.floor(moeLayers / c.decoder_sparse_step);
     if (c.moe_layer_freq > 1) moeLayers = Math.floor(moeLayers / c.moe_layer_freq);
     if (c.interleave_moe_layer_step > 1) moeLayers = Math.floor(moeLayers / c.interleave_moe_layer_step);
+    if (blocks) moeLayers = blocks.filter((b) => b === 'moe').length;
+    else if (typeof c.hybrid_override_pattern === 'string') moeLayers = [...c.hybrid_override_pattern].filter((x) => x === 'E').length;
+    else if (Array.isArray(c.mlp_layer_types)) moeLayers = c.mlp_layer_types.slice(0, L).filter((x) => /sparse|moe/.test(x)).length;
   }
-  const expertParams = isMoE ? 3 * hidden * moeInter : 0;
+  const expertIn = first(c.routed_expert_hidden_size, c.moe_latent_size, hidden); // latent-MoE projects down first
+  const expertParams = isMoE ? (c.mlp_hidden_act === 'relu2' ? 2 : 3) * expertIn * moeInter : 0;
+  // Huge lookup tables (Engram / n-gram embeddings) are read sparsely, so they don't count as active.
+  const lookupParams = Array.isArray(c.engram_num_embeddings)
+    ? c.engram_num_embeddings.reduce((x, y) => x + y, 0) * (c.engram_head_dim ?? 256)
+    : 0;
+  const activeUncertain = !!c.ngram_vocab_size_base && !lookupParams;
   const tied = c.tie_word_embeddings === true;
   const embedParams = vocab * hidden * (tied ? 1 : 2);
 
-  let attnKind = compress
+  let attnKind = typeSource === 'linear_attn_config' || (lac && layers.linear)
+    ? `Hybrid: ${layers.full} ${mla ? 'MLA' : 'full'} + ${layers.linear} linear (KDA) layers`
+    : blocks || typeof c.hybrid_override_pattern === 'string'
+    ? `Hybrid Mamba: ${layers.full} attention + ${layers.linear} Mamba layers`
+    : compress
     ? `Compressed attention (window ${window} + 1/${[...new Set(compress.filter((r) => r > 0))].sort((x, y) => x - y).join(', 1/')} KV)`
     : mla ? 'MLA (compressed latent KV)' : nKv === 1 ? 'MQA' : nKv < nHeads ? `GQA (${nHeads} q / ${nKv} kv heads)` : `MHA (${nHeads} heads)`;
 
   return {
     L, hidden, nHeads, nKv, headDim, maxPos, vocab, mla, window, types, compress, typeSource, layers,
-    linearStateBytes, isMoE, experts, topk, moeLayers, expertParams, embedParams, tied, attnKind,
+    linearStateBytes, isMoE, experts, topk, moeLayers, expertParams, embedParams, tied, attnKind, lookupParams, activeUncertain,
     kvLoraRank: c.kv_lora_rank, qkRope: c.qk_rope_head_dim ?? 64,
     indexerDim: c.index_topk ? (c.index_head_dim ?? 128) : 0,
     intermediate: c.intermediate_size ?? 4 * hidden,
@@ -280,8 +310,9 @@ export function estimateParams(a) {
 }
 
 export function activeParams(a, total) {
-  if (!a.isMoE) return total;
-  return Math.max(total - (a.experts - a.topk) * a.expertParams * a.moeLayers, 0);
+  const dense = total - (a.lookupParams && a.lookupParams < total ? a.lookupParams : 0);
+  if (!a.isMoE) return dense;
+  return Math.max(dense - (a.experts - a.topk) * a.expertParams * a.moeLayers, 0);
 }
 
 // ---------------------------------------------------------------- memory model

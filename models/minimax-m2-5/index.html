@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Can my GPU run MiniMax-M2.5? GPUs and VRAM needed</title>
+<meta name="description" content="MiniMax-M2.5 (229B, 214 GiB in FP8) needs 4 × H100 80 GB, 2 × H200 141 GB, 1 × B300 288 GB at 32K context. See GPUs needed per precision, VRAM, and max context.">
+<link rel="canonical" href="https://canmygpurunit.majnioui.me/models/minimax-m2-5/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Can my GPU run it?">
+<meta property="og:title" content="Can my GPU run MiniMax-M2.5? GPUs and VRAM needed">
+<meta property="og:description" content="MiniMax-M2.5 (229B, 214 GiB in FP8) needs 4 × H100 80 GB, 2 × H200 141 GB, 1 × B300 288 GB at 32K context. See GPUs needed per precision, VRAM, and max context.">
+<meta property="og:url" content="https://canmygpurunit.majnioui.me/models/minimax-m2-5/">
+<meta property="og:image" content="https://canmygpurunit.majnioui.me/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<script defer src="https://pulse.majnioui.me/pulse.js" data-website-id="1e1dd69e-6929-4195-a18c-c4d3c46c90a1"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://canmygpurunit.majnioui.me/"},{"@type":"ListItem","position":2,"name":"Models","item":"https://canmygpurunit.majnioui.me/models/"},{"@type":"ListItem","position":3,"name":"MiniMax-M2.5","item":"https://canmygpurunit.majnioui.me/models/minimax-m2-5/"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How much VRAM does MiniMax-M2.5 need?","acceptedAnswer":{"@type":"Answer","text":"The weights take 214 GiB as published (FP8), 426 GiB in BF16, 218 GiB in FP8 and 115 GiB in INT4. On top of that, the KV cache adds about 248.0 KiB per token: 7.75 GiB for one 32K-token request and 31.0 GiB at 128K. Serving engines also need a few GiB per GPU for activations."}},{"@type":"Question","name":"Can MiniMax-M2.5 run on a single H100?","acceptedAnswer":{"@type":"Answer","text":"No. Even in INT4 the weights (115 GiB) don't fit in the ~70 GiB an H100 can use. As published it needs 4 H100s."}},{"@type":"Question","name":"Can I run MiniMax-M2.5 on an RTX 4090 or a Mac?","acceptedAnswer":{"@type":"Answer","text":"It doesn't fit on one RTX 4090 (24 GB), even in INT4. A Mac Studio with M3 Ultra and 512 GB runs it as published, for example a Q4 GGUF with llama.cpp or MLX."}},{"@type":"Question","name":"How much context can MiniMax-M2.5 handle on 2 × H200 141 GB?","acceptedAnswer":{"@type":"Answer","text":"One request can use up to 143K tokens (the model's limit is 192K). At 32K tokens per request, about 4 requests fit in memory at once."}}]}</script>
+</head>
+<body>
+<div class="page doc">
+
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/models/">Models</a> / <span>MiniMax-M2.5</span></nav>
+  <h1>Can my GPU run MiniMax-M2.5?</h1>
+  <p class="lede big">MiniMax-M2.5 has 229B parameters, about 11.0B active per token. As published in FP8 the weights take 214 GiB. With 32K tokens of context it needs 4 × H100 80 GB, 2 × H200 141 GB, 1 × B300 288 GB and 8 × L40S 48 GB. It fits on a single B300 288 GB, MI355X 288 GB or Mac M3 Ultra 512 GB without quantizing.</p>
+  <p><a class="cta" href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=h200&n=2&w=native&ctx=32768&seqs=1">Try your own GPUs and context length</a></p>
+
+  <section class="block">
+    <h2>GPUs needed for MiniMax-M2.5</h2>
+    <p class="sub">The fewest GPUs of each type that run MiniMax-M2.5 with 32K tokens of context for one request. Select a number to open that setup.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>GPU</th><th>As published<br>FP8</th><th>BF16</th><th>FP8</th><th>INT4</th><th>FP4</th></tr></thead>
+      <tbody><tr><th scope="row"><a href="/gpus/h100/">H100</a><small>80 GB SXM</small></th><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=h100&n=4&w=native&ctx=32768&seqs=1">4</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=h100&n=8&w=bf16&ctx=32768&seqs=1">8</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=h100&n=4&w=fp8&ctx=32768&seqs=1">4</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=h100&n=2&w=int4&ctx=32768&seqs=1">2</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=h100&n=2&w=fp4&ctx=32768&seqs=1">2<sup>*</sup></a></td></tr><tr><th scope="row"><a href="/gpus/h200/">H200</a><small>141 GB SXM</small></th><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=h200&n=2&w=native&ctx=32768&seqs=1">2</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=h200&n=4&w=bf16&ctx=32768&seqs=1">4</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=h200&n=2&w=fp8&ctx=32768&seqs=1">2</a></td><td class="tight"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=h200&n=1&w=int4&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=h200&n=2&w=fp4&ctx=32768&seqs=1">2<sup>*</sup></a></td></tr><tr><th scope="row"><a href="/gpus/b200/">B200</a><small>180 GB</small></th><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=b200&n=2&w=native&ctx=32768&seqs=1">2</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=b200&n=4&w=bf16&ctx=32768&seqs=1">4</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=b200&n=2&w=fp8&ctx=32768&seqs=1">2</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=b200&n=1&w=int4&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=b200&n=1&w=fp4&ctx=32768&seqs=1">1</a></td></tr><tr><th scope="row"><a href="/gpus/b300/">B300</a><small>288 GB</small></th><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=b300&n=1&w=native&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=b300&n=2&w=bf16&ctx=32768&seqs=1">2</a></td><td class="tight"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=b300&n=1&w=fp8&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=b300&n=1&w=int4&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=b300&n=1&w=fp4&ctx=32768&seqs=1">1</a></td></tr><tr><th scope="row"><a href="/gpus/l40s/">L40S</a><small>48 GB PCIe</small></th><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=l40s&n=8&w=native&ctx=32768&seqs=1">8</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=l40s&n=16&w=bf16&ctx=32768&seqs=1">16</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=l40s&n=8&w=fp8&ctx=32768&seqs=1">8</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=l40s&n=4&w=int4&ctx=32768&seqs=1">4</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=l40s&n=4&w=fp4&ctx=32768&seqs=1">4<sup>*</sup></a></td></tr><tr><th scope="row"><a href="/gpus/a100/">A100</a><small>80 GB SXM</small></th><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=a100&n=4&w=native&ctx=32768&seqs=1">4<sup>*</sup></a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=a100&n=8&w=bf16&ctx=32768&seqs=1">8</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=a100&n=4&w=fp8&ctx=32768&seqs=1">4<sup>*</sup></a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=a100&n=2&w=int4&ctx=32768&seqs=1">2</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=a100&n=2&w=fp4&ctx=32768&seqs=1">2<sup>*</sup></a></td></tr><tr><th scope="row"><a href="/gpus/mi300x/">MI300X</a><small>192 GB</small></th><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=mi300x&n=2&w=native&ctx=32768&seqs=1">2</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=mi300x&n=4&w=bf16&ctx=32768&seqs=1">4</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=mi300x&n=2&w=fp8&ctx=32768&seqs=1">2</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=mi300x&n=1&w=int4&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=mi300x&n=1&w=fp4&ctx=32768&seqs=1">1<sup>*</sup></a></td></tr><tr><th scope="row"><a href="/gpus/mi355x/">MI355X</a><small>288 GB</small></th><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=mi355x&n=1&w=native&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=mi355x&n=2&w=bf16&ctx=32768&seqs=1">2</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=mi355x&n=1&w=fp8&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=mi355x&n=1&w=int4&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=mi355x&n=1&w=fp4&ctx=32768&seqs=1">1</a></td></tr><tr><th scope="row"><a href="/gpus/rtxpro6000/">RTX PRO 6000</a><small>96 GB Blackwell</small></th><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=rtxpro6000&n=4&w=native&ctx=32768&seqs=1">4</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=rtxpro6000&n=8&w=bf16&ctx=32768&seqs=1">8</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=rtxpro6000&n=4&w=fp8&ctx=32768&seqs=1">4</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=rtxpro6000&n=2&w=int4&ctx=32768&seqs=1">2</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=rtxpro6000&n=2&w=fp4&ctx=32768&seqs=1">2</a></td></tr><tr><th scope="row"><a href="/gpus/rtx5090/">RTX 5090</a><small>32 GB</small></th><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=rtx5090&n=16&w=native&ctx=32768&seqs=1">16</a></td><td class="none">—</td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=rtx5090&n=16&w=fp8&ctx=32768&seqs=1">16</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=rtx5090&n=8&w=int4&ctx=32768&seqs=1">8</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=rtx5090&n=8&w=fp4&ctx=32768&seqs=1">8</a></td></tr><tr><th scope="row"><a href="/gpus/rtx4090/">RTX 4090</a><small>24 GB</small></th><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=rtx4090&n=16&w=native&ctx=32768&seqs=1">16</a></td><td class="none">—</td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=rtx4090&n=16&w=fp8&ctx=32768&seqs=1">16</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=rtx4090&n=8&w=int4&ctx=32768&seqs=1">8</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=rtx4090&n=8&w=fp4&ctx=32768&seqs=1">8<sup>*</sup></a></td></tr><tr><th scope="row"><a href="/gpus/dgxspark/">DGX Spark</a><small>128 GB unified</small></th><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=dgxspark&n=4&w=native&ctx=32768&seqs=1">4</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=dgxspark&n=8&w=bf16&ctx=32768&seqs=1">8</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=dgxspark&n=4&w=fp8&ctx=32768&seqs=1">4</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=dgxspark&n=2&w=int4&ctx=32768&seqs=1">2</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=dgxspark&n=2&w=fp4&ctx=32768&seqs=1">2</a></td></tr><tr><th scope="row"><a href="/gpus/m3ultra512/">Mac M3 Ultra</a><small>512 GB unified</small></th><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=m3ultra512&n=1&w=native&ctx=32768&seqs=1">1<sup>*</sup></a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=m3ultra512&n=2&w=bf16&ctx=32768&seqs=1">2</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=m3ultra512&n=1&w=fp8&ctx=32768&seqs=1">1<sup>*</sup></a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=m3ultra512&n=1&w=int4&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=MiniMaxAI%2FMiniMax-M2.5&gpu=m3ultra512&n=1&w=fp4&ctx=32768&seqs=1">1<sup>*</sup></a></td></tr></tbody>
+    </table></div>
+    <p class="legend">— means more than 16 GPUs. * runs, but not natively on that GPU, so it’s slower.</p>
+  </section>
+
+  <section class="block">
+    <h2>How much context fits</h2>
+    <p class="sub">The longest single request, and how many requests fit in memory at once at each context length.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Setup</th><th>Longest request</th><th>Requests at 32K</th><th>Requests at 128K</th><th>Requests at 192K</th></tr></thead>
+      <tbody><tr><th scope="row">2 × H200 141 GB<small>FP8</small></th><td>143K</td><td>4</td><td>1</td><td>0</td></tr><tr><th scope="row">4 × H100 80 GB<small>FP8</small></th><td>192K</td><td>8</td><td>2</td><td>1</td></tr><tr><th scope="row">1 × B300 288 GB<small>FP8</small></th><td>103K</td><td>3</td><td>0</td><td>0</td></tr><tr><th scope="row">16 × RTX 4090 24 GB<small>FP8</small></th><td>192K</td><td>6</td><td>1</td><td>1</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section class="block">
+    <h2>Memory needed</h2>
+    <div class="table-wrap"><table class="narrow">
+      <thead><tr><th>Part</th><th>Size</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Weights, as published (FP8)</th><td>214 GiB</td></tr><tr><th scope="row">Weights, BF16</th><td>426 GiB</td></tr><tr><th scope="row">Weights, FP8</th><td>218 GiB</td></tr><tr><th scope="row">Weights, INT4</th><td>115 GiB</td></tr><tr><th scope="row">Weights, FP4</th><td>121 GiB</td></tr>
+        <tr><th scope="row">KV cache, one 32K request</th><td>7.75 GiB</td></tr><tr><th scope="row">KV cache, one 128K request</th><td>31.0 GiB</td></tr><tr><th scope="row">KV cache, one 192K request</th><td>46.5 GiB</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="block">
+    <h2>About MiniMax-M2.5</h2>
+    <dl class="facts"><dt>Hugging Face</dt><dd><a href="https://huggingface.co/MiniMaxAI/MiniMax-M2.5" rel="noopener">MiniMaxAI/MiniMax-M2.5</a></dd><dt>Parameters</dt><dd>229B, about 11.0B active per token</dd><dt>Experts</dt><dd>256, 8 used per token</dd><dt>Published weights</dt><dd>214 GiB in FP8</dd><dt>Attention</dt><dd>GQA (48 q / 8 kv heads)</dd><dt>Layers</dt><dd>62 full attention</dd><dt>KV cache per token</dt><dd>248.0 KiB in BF16</dd><dt>Longest context</dt><dd>192K tokens</dd></dl>
+    <ul class="notes spaced"><li>The published weights are FP8, native on Ada, Hopper, Blackwell and MI300 or newer. A100s run FP8 as weight-only.</li></ul>
+  </section>
+
+  <section class="block">
+    <h2>Questions</h2>
+    <h3>How much VRAM does MiniMax-M2.5 need?</h3><p class="qa">The weights take 214 GiB as published (FP8), 426 GiB in BF16, 218 GiB in FP8 and 115 GiB in INT4. On top of that, the KV cache adds about 248.0 KiB per token: 7.75 GiB for one 32K-token request and 31.0 GiB at 128K. Serving engines also need a few GiB per GPU for activations.</p>
+    <h3>Can MiniMax-M2.5 run on a single H100?</h3><p class="qa">No. Even in INT4 the weights (115 GiB) don't fit in the ~70 GiB an H100 can use. As published it needs 4 H100s.</p>
+    <h3>Can I run MiniMax-M2.5 on an RTX 4090 or a Mac?</h3><p class="qa">It doesn't fit on one RTX 4090 (24 GB), even in INT4. A Mac Studio with M3 Ultra and 512 GB runs it as published, for example a Q4 GGUF with llama.cpp or MLX.</p>
+    <h3>How much context can MiniMax-M2.5 handle on 2 × H200 141 GB?</h3><p class="qa">One request can use up to 143K tokens (the model's limit is 192K). At 32K tokens per request, about 4 requests fit in memory at once.</p>
+  </section>
+
+  <section class="block">
+    <h2>Similar models</h2>
+    <ul class="links"><li><a href="/models/minimax-m2/">MiniMax-M2</a> <span class="muted">229B</span></li><li><a href="/models/qwen3-235b-a22b/">Qwen3-235B-A22B</a> <span class="muted">235B</span></li><li><a href="/models/qwen3-8-flash-next/">Qwen3.8-Flash-Next</a> <span class="muted">180B</span></li><li><a href="/models/deepseek-v4-flash/">DeepSeek-V4-Flash</a> <span class="muted">291B</span></li><li><a href="/models/hy3/">Hy3</a> <span class="muted">299B</span></li><li><a href="/models/glm-5-3-flash/">GLM-5.3-Flash</a> <span class="muted">321B</span></li></ul>
+  </section>
+  <footer class="foot">
+    <p>Estimates assume vLLM or SGLang serving with tensor parallelism, 90% of GPU memory in use, and a BF16 KV cache. Results near the limit are borderline. Data read from Hugging Face on 2026-11-05.</p>
+    <p class="credit"><a href="/">Can my GPU run it?</a> · <a href="/models/">Models</a> · <a href="/gpus/">GPUs</a> · Made by <a href="https://majnioui.me" target="_blank" rel="noopener">Moe Majnioui</a></p>
+  </footer>
+</div>
+</body>
+</html>

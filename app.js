@@ -196,7 +196,7 @@ function facts() {
     ? [...new Set(a.compress)].sort((x, y) => x - y).map((r) => `${a.compress.filter((x) => x === r).length} ${r ? `with 1/${r} compressed KV` : 'window only'}`)
     : [a.layers.full && `${a.layers.full} full attention`, a.layers.sliding && `${a.layers.sliding} sliding window (${fmtTokens(a.window)})`, a.layers.linear && `${a.layers.linear} linear attention`].filter(Boolean);
   const rows = [
-    ['Parameters', `${fmtParams(model.params)}${model.paramsEstimated ? ' (estimated)' : ''}${a.isMoE ? `, about ${fmtParams(model.active)} active per token` : ''}`],
+    ['Parameters', `${fmtParams(model.params)}${model.paramsEstimated ? ' (estimated)' : ''}${a.isMoE && !a.activeUncertain ? `, about ${fmtParams(model.active)} active per token` : ''}`],
     a.isMoE && ['Experts', `${a.experts}, with ${a.topk} used per token`],
     ['Published weights', `${model.nativeBytes ? fmtGiB(model.nativeBytes) + ' in ' : ''}${model.nativePrec.toUpperCase()}`],
     ['Attention', a.attnKind],

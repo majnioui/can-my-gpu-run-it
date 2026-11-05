@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Can my GPU run Qwen3-32B? GPUs and VRAM needed</title>
+<meta name="description" content="Qwen3-32B (32.8B, 61.0 GiB in BF16) needs 1 × H100 80 GB, 1 × H200 141 GB, 1 × B300 288 GB at 32K context. See GPUs needed per precision, VRAM, and max context.">
+<link rel="canonical" href="https://canmygpurunit.majnioui.me/models/qwen3-32b/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Can my GPU run it?">
+<meta property="og:title" content="Can my GPU run Qwen3-32B? GPUs and VRAM needed">
+<meta property="og:description" content="Qwen3-32B (32.8B, 61.0 GiB in BF16) needs 1 × H100 80 GB, 1 × H200 141 GB, 1 × B300 288 GB at 32K context. See GPUs needed per precision, VRAM, and max context.">
+<meta property="og:url" content="https://canmygpurunit.majnioui.me/models/qwen3-32b/">
+<meta property="og:image" content="https://canmygpurunit.majnioui.me/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<script defer src="https://pulse.majnioui.me/pulse.js" data-website-id="1e1dd69e-6929-4195-a18c-c4d3c46c90a1"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://canmygpurunit.majnioui.me/"},{"@type":"ListItem","position":2,"name":"Models","item":"https://canmygpurunit.majnioui.me/models/"},{"@type":"ListItem","position":3,"name":"Qwen3-32B","item":"https://canmygpurunit.majnioui.me/models/qwen3-32b/"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How much VRAM does Qwen3-32B need?","acceptedAnswer":{"@type":"Answer","text":"The weights take 61.0 GiB as published (BF16), 61.0 GiB in BF16, 32.5 GiB in FP8 and 18.3 GiB in INT4. On top of that, the KV cache adds about 256.0 KiB per token: 8.00 GiB for one 32K-token request. Serving engines also need a few GiB per GPU for activations."}},{"@type":"Question","name":"Can Qwen3-32B run on a single H100?","acceptedAnswer":{"@type":"Answer","text":"Yes. As published in BF16 it fits on one H100 80 GB with 32K tokens of context."}},{"@type":"Question","name":"Can I run Qwen3-32B on an RTX 4090 or a Mac?","acceptedAnswer":{"@type":"Answer","text":"It doesn't fit on one RTX 4090 (24 GB), even in INT4. A Mac Studio with M3 Ultra and 512 GB runs it as published, for example a Q4 GGUF with llama.cpp or MLX."}},{"@type":"Question","name":"How much context can Qwen3-32B handle on 1 × H200 141 GB?","acceptedAnswer":{"@type":"Answer","text":"One request can use up to 40K tokens (the model's limit is 40K). At 32K tokens per request, about 7 requests fit in memory at once."}}]}</script>
+</head>
+<body>
+<div class="page doc">
+
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/models/">Models</a> / <span>Qwen3-32B</span></nav>
+  <h1>Can my GPU run Qwen3-32B?</h1>
+  <p class="lede big">Qwen3-32B has 32.8B parameters. As published in BF16 the weights take 61.0 GiB. With 32K tokens of context it needs 1 × H100 80 GB, 1 × H200 141 GB, 1 × B300 288 GB and 2 × L40S 48 GB. It fits on a single H100 80 GB, H200 141 GB, B200 180 GB or B300 288 GB without quantizing.</p>
+  <p><a class="cta" href="/#m=Qwen%2FQwen3-32B&gpu=h200&n=1&w=native&ctx=32768&seqs=1">Try your own GPUs and context length</a></p>
+
+  <section class="block">
+    <h2>GPUs needed for Qwen3-32B</h2>
+    <p class="sub">The fewest GPUs of each type that run Qwen3-32B with 32K tokens of context for one request. Select a number to open that setup.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>GPU</th><th>As published<br>BF16</th><th>BF16</th><th>FP8</th><th>INT4</th><th>FP4</th></tr></thead>
+      <tbody><tr><th scope="row"><a href="/gpus/h100/">H100</a><small>80 GB SXM</small></th><td class="tight"><a href="/#m=Qwen%2FQwen3-32B&gpu=h100&n=1&w=native&ctx=32768&seqs=1">1</a></td><td class="tight"><a href="/#m=Qwen%2FQwen3-32B&gpu=h100&n=1&w=bf16&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=h100&n=1&w=fp8&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=h100&n=1&w=int4&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=h100&n=1&w=fp4&ctx=32768&seqs=1">1<sup>*</sup></a></td></tr><tr><th scope="row"><a href="/gpus/h200/">H200</a><small>141 GB SXM</small></th><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=h200&n=1&w=native&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=h200&n=1&w=bf16&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=h200&n=1&w=fp8&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=h200&n=1&w=int4&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=h200&n=1&w=fp4&ctx=32768&seqs=1">1<sup>*</sup></a></td></tr><tr><th scope="row"><a href="/gpus/b200/">B200</a><small>180 GB</small></th><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=b200&n=1&w=native&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=b200&n=1&w=bf16&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=b200&n=1&w=fp8&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=b200&n=1&w=int4&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=b200&n=1&w=fp4&ctx=32768&seqs=1">1</a></td></tr><tr><th scope="row"><a href="/gpus/b300/">B300</a><small>288 GB</small></th><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=b300&n=1&w=native&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=b300&n=1&w=bf16&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=b300&n=1&w=fp8&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=b300&n=1&w=int4&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=b300&n=1&w=fp4&ctx=32768&seqs=1">1</a></td></tr><tr><th scope="row"><a href="/gpus/l40s/">L40S</a><small>48 GB PCIe</small></th><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=l40s&n=2&w=native&ctx=32768&seqs=1">2</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=l40s&n=2&w=bf16&ctx=32768&seqs=1">2</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=l40s&n=2&w=fp8&ctx=32768&seqs=1">2</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=l40s&n=1&w=int4&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=l40s&n=1&w=fp4&ctx=32768&seqs=1">1<sup>*</sup></a></td></tr><tr><th scope="row"><a href="/gpus/a100/">A100</a><small>80 GB SXM</small></th><td class="tight"><a href="/#m=Qwen%2FQwen3-32B&gpu=a100&n=1&w=native&ctx=32768&seqs=1">1</a></td><td class="tight"><a href="/#m=Qwen%2FQwen3-32B&gpu=a100&n=1&w=bf16&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=a100&n=1&w=fp8&ctx=32768&seqs=1">1<sup>*</sup></a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=a100&n=1&w=int4&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=a100&n=1&w=fp4&ctx=32768&seqs=1">1<sup>*</sup></a></td></tr><tr><th scope="row"><a href="/gpus/mi300x/">MI300X</a><small>192 GB</small></th><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=mi300x&n=1&w=native&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=mi300x&n=1&w=bf16&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=mi300x&n=1&w=fp8&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=mi300x&n=1&w=int4&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=mi300x&n=1&w=fp4&ctx=32768&seqs=1">1<sup>*</sup></a></td></tr><tr><th scope="row"><a href="/gpus/mi355x/">MI355X</a><small>288 GB</small></th><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=mi355x&n=1&w=native&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=mi355x&n=1&w=bf16&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=mi355x&n=1&w=fp8&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=mi355x&n=1&w=int4&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=mi355x&n=1&w=fp4&ctx=32768&seqs=1">1</a></td></tr><tr><th scope="row"><a href="/gpus/rtxpro6000/">RTX PRO 6000</a><small>96 GB Blackwell</small></th><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=rtxpro6000&n=1&w=native&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=rtxpro6000&n=1&w=bf16&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=rtxpro6000&n=1&w=fp8&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=rtxpro6000&n=1&w=int4&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=rtxpro6000&n=1&w=fp4&ctx=32768&seqs=1">1</a></td></tr><tr><th scope="row"><a href="/gpus/rtx5090/">RTX 5090</a><small>32 GB</small></th><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=rtx5090&n=4&w=native&ctx=32768&seqs=1">4</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=rtx5090&n=4&w=bf16&ctx=32768&seqs=1">4</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=rtx5090&n=2&w=fp8&ctx=32768&seqs=1">2</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=rtx5090&n=2&w=int4&ctx=32768&seqs=1">2</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=rtx5090&n=2&w=fp4&ctx=32768&seqs=1">2</a></td></tr><tr><th scope="row"><a href="/gpus/rtx4090/">RTX 4090</a><small>24 GB</small></th><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=rtx4090&n=4&w=native&ctx=32768&seqs=1">4</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=rtx4090&n=4&w=bf16&ctx=32768&seqs=1">4</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=rtx4090&n=4&w=fp8&ctx=32768&seqs=1">4</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=rtx4090&n=2&w=int4&ctx=32768&seqs=1">2</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=rtx4090&n=2&w=fp4&ctx=32768&seqs=1">2<sup>*</sup></a></td></tr><tr><th scope="row"><a href="/gpus/dgxspark/">DGX Spark</a><small>128 GB unified</small></th><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=dgxspark&n=1&w=native&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=dgxspark&n=1&w=bf16&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=dgxspark&n=1&w=fp8&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=dgxspark&n=1&w=int4&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=dgxspark&n=1&w=fp4&ctx=32768&seqs=1">1</a></td></tr><tr><th scope="row"><a href="/gpus/m3ultra512/">Mac M3 Ultra</a><small>512 GB unified</small></th><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=m3ultra512&n=1&w=native&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=m3ultra512&n=1&w=bf16&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=m3ultra512&n=1&w=fp8&ctx=32768&seqs=1">1<sup>*</sup></a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=m3ultra512&n=1&w=int4&ctx=32768&seqs=1">1</a></td><td class="yes"><a href="/#m=Qwen%2FQwen3-32B&gpu=m3ultra512&n=1&w=fp4&ctx=32768&seqs=1">1<sup>*</sup></a></td></tr></tbody>
+    </table></div>
+    <p class="legend">— means more than 16 GPUs. * runs, but not natively on that GPU, so it’s slower.</p>
+  </section>
+
+  <section class="block">
+    <h2>How much context fits</h2>
+    <p class="sub">The longest single request, and how many requests fit in memory at once at each context length.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Setup</th><th>Longest request</th><th>Requests at 32K</th><th>Requests at 40K</th></tr></thead>
+      <tbody><tr><th scope="row">1 × H200 141 GB<small>BF16</small></th><td>40K</td><td>7</td><td>6</td></tr><tr><th scope="row">1 × H100 80 GB<small>BF16</small></th><td>32K</td><td>1</td><td>0</td></tr><tr><th scope="row">1 × B300 288 GB<small>BF16</small></th><td>40K</td><td>22</td><td>17</td></tr><tr><th scope="row">4 × RTX 4090 24 GB<small>BF16</small></th><td>40K</td><td>2</td><td>1</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section class="block">
+    <h2>Memory needed</h2>
+    <div class="table-wrap"><table class="narrow">
+      <thead><tr><th>Part</th><th>Size</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Weights, as published (BF16)</th><td>61.0 GiB</td></tr><tr><th scope="row">Weights, BF16</th><td>61.0 GiB</td></tr><tr><th scope="row">Weights, FP8</th><td>32.5 GiB</td></tr><tr><th scope="row">Weights, INT4</th><td>18.3 GiB</td></tr><tr><th scope="row">Weights, FP4</th><td>19.2 GiB</td></tr>
+        <tr><th scope="row">KV cache, one 32K request</th><td>8.00 GiB</td></tr><tr><th scope="row">KV cache, one 40K request</th><td>10.0 GiB</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="block">
+    <h2>About Qwen3-32B</h2>
+    <dl class="facts"><dt>Hugging Face</dt><dd><a href="https://huggingface.co/Qwen/Qwen3-32B" rel="noopener">Qwen/Qwen3-32B</a></dd><dt>Parameters</dt><dd>32.8B</dd><dt>Published weights</dt><dd>61.0 GiB in BF16</dd><dt>Attention</dt><dd>GQA (64 q / 8 kv heads)</dd><dt>Layers</dt><dd>64 full attention</dd><dt>KV cache per token</dt><dd>256.0 KiB in BF16</dd><dt>Longest context</dt><dd>40K tokens</dd></dl>
+    
+  </section>
+
+  <section class="block">
+    <h2>Questions</h2>
+    <h3>How much VRAM does Qwen3-32B need?</h3><p class="qa">The weights take 61.0 GiB as published (BF16), 61.0 GiB in BF16, 32.5 GiB in FP8 and 18.3 GiB in INT4. On top of that, the KV cache adds about 256.0 KiB per token: 8.00 GiB for one 32K-token request. Serving engines also need a few GiB per GPU for activations.</p>
+    <h3>Can Qwen3-32B run on a single H100?</h3><p class="qa">Yes. As published in BF16 it fits on one H100 80 GB with 32K tokens of context.</p>
+    <h3>Can I run Qwen3-32B on an RTX 4090 or a Mac?</h3><p class="qa">It doesn't fit on one RTX 4090 (24 GB), even in INT4. A Mac Studio with M3 Ultra and 512 GB runs it as published, for example a Q4 GGUF with llama.cpp or MLX.</p>
+    <h3>How much context can Qwen3-32B handle on 1 × H200 141 GB?</h3><p class="qa">One request can use up to 40K tokens (the model's limit is 40K). At 32K tokens per request, about 7 requests fit in memory at once.</p>
+  </section>
+
+  <section class="block">
+    <h2>Similar models</h2>
+    <ul class="links"><li><a href="/models/qwen3-coder-30b-a3b/">Qwen3-Coder-30B-A3B</a> <span class="muted">30.5B</span></li><li><a href="/models/qwen3-6-35b-a3b/">Qwen3.6-35B-A3B</a> <span class="muted">36.0B</span></li><li><a href="/models/qwen3-8-27b/">Qwen3.8-27B</a> <span class="muted">27.8B</span></li><li><a href="/models/nemotron-3-nano-30b/">Nemotron 3 Nano 30B</a> <span class="muted">31.6B</span></li><li><a href="/models/gemma-4-31b/">gemma-4-31B</a> <span class="muted">31.3B</span></li><li><a href="/models/gpt-oss-20b/">gpt-oss-20b</a> <span class="muted">20.9B</span></li></ul>
+  </section>
+  <footer class="foot">
+    <p>Estimates assume vLLM or SGLang serving with tensor parallelism, 90% of GPU memory in use, and a BF16 KV cache. Results near the limit are borderline. Data read from Hugging Face on 2026-11-05.</p>
+    <p class="credit"><a href="/">Can my GPU run it?</a> · <a href="/models/">Models</a> · <a href="/gpus/">GPUs</a> · Made by <a href="https://majnioui.me" target="_blank" rel="noopener">Moe Majnioui</a></p>
+  </footer>
+</div>
+</body>
+</html>

@@ -4,11 +4,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Can my GPU run it? Check if an open model fits on your GPUs</title>
-<meta name="description" content="Check whether an open model from Hugging Face fits on your GPUs, how many you need, and how much context you can serve.">
+<meta name="description" content="Check whether an open model from Hugging Face fits on your GPUs, how many you need, and how much context you can serve. H100, H200, B300, L40S, RTX 4090, Mac and more.">
+<link rel="canonical" href="https://canmygpurunit.majnioui.me/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Can my GPU run it?">
+<meta property="og:title" content="Can my GPU run it?">
+<meta property="og:description" content="Check whether an open model from Hugging Face fits on your GPUs, and how many you need.">
+<meta property="og:url" content="https://canmygpurunit.majnioui.me/">
+<meta property="og:image" content="https://canmygpurunit.majnioui.me/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Can my GPU run it?", "url": "https://canmygpurunit.majnioui.me/", "applicationCategory": "DeveloperApplication", "operatingSystem": "Any (web browser)", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "description": "Check whether an open model from Hugging Face fits on your GPUs, how many GPUs you need, and how much context you can serve.", "author": {"@type": "Person", "name": "Moe Majnioui", "url": "https://majnioui.me"}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="/style.css">
 <script defer src="https://pulse.majnioui.me/pulse.js" data-website-id="1e1dd69e-6929-4195-a18c-c4d3c46c90a1"></script>
 </head>
 <body>
@@ -54,11 +64,20 @@
 
   <main id="out"></main>
 
+  <!--seo:start-->
+  <section class="block browse">
+    <h2>Popular models</h2>
+    <ul class="links cols"><li><a href="/models/deepseek-v4-1-flash/">DeepSeek-V4.1-Flash</a></li><li><a href="/models/deepseek-v4-pro/">DeepSeek-V4-Pro</a></li><li><a href="/models/deepseek-v4-flash/">DeepSeek-V4-Flash</a></li><li><a href="/models/deepseek-v3-2/">DeepSeek-V3.2</a></li><li><a href="/models/deepseek-v3-1/">DeepSeek-V3.1</a></li><li><a href="/models/deepseek-v3/">DeepSeek-V3</a></li><li><a href="/models/deepseek-r1/">DeepSeek-R1</a></li><li><a href="/models/kimi-k3/">Kimi-K3</a></li><li><a href="/models/kimi-k2/">Kimi-K2</a></li><li><a href="/models/glm-5-3/">GLM-5.3</a></li><li><a href="/models/glm-5-3-flash/">GLM-5.3-Flash</a></li><li><a href="/models/glm-4-6/">GLM-4.6</a></li><li><a href="/models/glm-4-5-air/">GLM-4.5-Air</a></li><li><a href="/models/minimax-m2-5/">MiniMax-M2.5</a></li><li><a href="/models/minimax-m2/">MiniMax-M2</a></li><li><a href="/models/qwen3-8-2-4t-a95b/">Qwen3.8-2.4T-A95B</a></li><li><a href="/models/qwen3-8-flash-next/">Qwen3.8-Flash-Next</a></li><li><a href="/models/qwen3-8-27b/">Qwen3.8-27B</a></li><li><a href="/models/qwen3-6-35b-a3b/">Qwen3.6-35B-A3B</a></li><li><a href="/models/qwen3-5-9b/">Qwen3.5-9B</a></li><li><a href="/models/qwen3-235b-a22b/">Qwen3-235B-A22B</a></li><li><a href="/models/qwen3-coder-480b-a35b/">Qwen3-Coder-480B-A35B</a></li><li><a href="/models/qwen3-coder-30b-a3b/">Qwen3-Coder-30B-A3B</a></li><li><a href="/models/qwen3-next-80b-a3b/">Qwen3-Next-80B-A3B</a></li><li><a href="/models/qwen3-32b/">Qwen3-32B</a></li><li><a href="/models/qwen3-14b/">Qwen3-14B</a></li><li><a href="/models/qwen3-8b/">Qwen3-8B</a></li><li><a href="/models/gpt-oss-120b/">gpt-oss-120b</a></li><li><a href="/models/gpt-oss-20b/">gpt-oss-20b</a></li><li><a href="/models/gemma-4-31b/">gemma-4-31B</a></li><li><a href="/models/nemotron-3-ultra-550b/">Nemotron 3 Ultra 550B</a></li><li><a href="/models/nemotron-3-nano-30b/">Nemotron 3 Nano 30B</a></li><li><a href="/models/hy3/">Hy3</a></li><li><a href="/models/llama-3-3-70b/">Llama-3.3-70B</a></li><li><a href="/models/llama-3-1-8b/">Llama-3.1-8B</a></li></ul>
+    <h2>GPUs</h2>
+    <ul class="links cols"><li><a href="/gpus/h100/">H100 80 GB</a></li><li><a href="/gpus/h200/">H200 141 GB</a></li><li><a href="/gpus/b200/">B200 180 GB</a></li><li><a href="/gpus/b300/">B300 288 GB</a></li><li><a href="/gpus/l40s/">L40S 48 GB</a></li><li><a href="/gpus/a100/">A100 80 GB</a></li><li><a href="/gpus/h100pcie/">H100 PCIe 80 GB</a></li><li><a href="/gpus/l4/">L4 24 GB</a></li><li><a href="/gpus/mi300x/">MI300X 192 GB</a></li><li><a href="/gpus/mi355x/">MI355X 288 GB</a></li><li><a href="/gpus/rtxpro6000/">RTX PRO 6000 96 GB</a></li><li><a href="/gpus/rtx5090/">RTX 5090 32 GB</a></li><li><a href="/gpus/rtx4090/">RTX 4090 24 GB</a></li><li><a href="/gpus/rtx3090/">RTX 3090 / Ti 24 GB</a></li><li><a href="/gpus/dgxspark/">DGX Spark 128 GB</a></li><li><a href="/gpus/m3ultra512/">Mac M3 Ultra 512 GB</a></li></ul>
+  </section>
+  <!--seo:end-->
+
   <footer class="foot">
     <p>Estimates assume vLLM or SGLang serving with tensor parallelism. Results near the limit are borderline. Model data is read live from Hugging Face; nothing is downloaded.</p>
     <p class="credit">Made by <a href="https://majnioui.me" target="_blank" rel="noopener">Moe Majnioui</a></p>
   </footer>
 </div>
-<script type="module" src="app.js"></script>
+<script type="module" src="/app.js"></script>
 </body>
 </html>
